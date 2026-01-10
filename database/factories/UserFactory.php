@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace Database\Factories;
 
@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 class UserFactory extends Factory
 {
     /**
-     * The current password being used by the factory.
+     * Password saat ini yang dipakai oleh factory.
      */
     protected static ?string $password;
 
@@ -42,3 +42,4 @@ class UserFactory extends Factory
         ]);
     }
 }
+

@@ -8,15 +8,15 @@
 
         <div>
             <label class="block text-sm font-medium">Anggota</label>
-            <select class="mt-1 w-full rounded border border-slate-300 px-3 py-2" name="member_id" required>
+            <select class="mt-1 w-full rounded border border-slate-300 px-3 py-2" name="user_id" required>
                 <option value="">Pilih anggota</option>
-                @foreach ($members as $member)
-                    <option value="{{ $member->id }}" @selected(old('member_id') == $member->id)>
-                        {{ $member->member_code }} - {{ $member->name }}
+                @foreach ($users as $user)
+                    <option value="{{ $user->id }}" @selected(old('user_id') == $user->id)>
+                        {{ $user->member_code ?? '-' }} - {{ $user->name }}
                     </option>
                 @endforeach
             </select>
-            @error('member_id')<p class="text-sm text-rose-600">{{ $message }}</p>@enderror
+            @error('user_id')<p class="text-sm text-rose-600">{{ $message }}</p>@enderror
         </div>
 
         <div>
@@ -32,14 +32,8 @@
             @error('book_id')<p class="text-sm text-rose-600">{{ $message }}</p>@enderror
         </div>
 
-        <div>
-            <label class="block text-sm font-medium">Tanggal Pinjam</label>
-            <input class="mt-1 w-full rounded border border-slate-300 px-3 py-2" name="loan_date" type="date" value="{{ old('loan_date') }}">
-            @error('loan_date')<p class="text-sm text-rose-600">{{ $message }}</p>@enderror
-        </div>
-
         <p class="text-sm text-slate-600">
-            Tanggal jatuh tempo otomatis +7 hari dari tanggal pinjam.
+            Tanggal pinjam otomatis hari ini, jatuh tempo +7 hari.
         </p>
 
         <div class="flex gap-3">

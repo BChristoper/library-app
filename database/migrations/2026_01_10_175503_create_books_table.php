@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Menjalankan migrasi untuk membuat/ubah struktur tabel.
      */
     public function up(): void
     {
@@ -15,19 +15,20 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('author');
-            $table->string('isbn')->nullable()->unique();
+            $table->string('isbn', 32)->nullable()->unique();
             $table->string('publisher')->nullable();
-            $table->year('year')->nullable();
+            $table->unsignedSmallInteger('year')->nullable();
             $table->unsignedInteger('stock')->default(0);
             $table->timestamps();
         });
     }
 
     /**
-     * Reverse the migrations.
+     * Membatalkan migrasi (mengembalikan perubahan tabel).
      */
     public function down(): void
     {
         Schema::dropIfExists('books');
     }
 };
+

@@ -3,9 +3,11 @@
 @section('content')
     <div class="flex flex-wrap items-center justify-between gap-3">
         <h1 class="text-xl font-semibold">Daftar Peminjaman</h1>
-        <a class="rounded bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800" href="{{ route('loans.create') }}">
-            Catat Peminjaman
-        </a>
+        @if (auth()->user()->role === 'petugas')
+            <a class="rounded bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800" href="{{ route('loans.create') }}">
+                Catat Peminjaman
+            </a>
+        @endif
     </div>
 
     <div class="mt-4 grid gap-3 sm:grid-cols-2">
@@ -41,13 +43,20 @@
                     <th class="px-4 py-3">Jatuh Tempo</th>
                     <th class="px-4 py-3">Tanggal Kembali</th>
                     <th class="px-4 py-3">Status</th>
-                    <th class="px-4 py-3">Aksi</th>
+                    @if (auth()->user()->role === 'petugas')
+                        <th class="px-4 py-3">Aksi</th>
+                    @endif
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-200">
                 @forelse ($loans as $loan)
                     <tr>
-                        <td class="px-4 py-3">{{ $loan->member->name }}</td>
+                        <td class="px-4 py-3">
+                            {{ $loan->user->name }}
+                            @if ($loan->user->member_code)
+                                <span class="text-xs text-slate-500">({{ $loan->user->member_code }})</span>
+                            @endif
+                        </td>
                         <td class="px-4 py-3">{{ $loan->book->title }}</td>
                         <td class="px-4 py-3">{{ $loan->loan_date }}</td>
                         <td class="px-4 py-3">{{ $loan->due_date }}</td>
@@ -55,24 +64,26 @@
                         <td class="px-4 py-3">
                             {{ $loan->return_date ? 'Selesai' : 'Aktif' }}
                         </td>
-                        <td class="px-4 py-3">
-                            @if (! $loan->return_date)
-                                <form class="flex flex-wrap items-center gap-2" method="POST" action="{{ route('loans.update', $loan) }}">
-                                    @csrf
-                                    @method('PATCH')
-                                    <input class="rounded border border-slate-300 px-2 py-1 text-xs" name="return_date" type="date" value="{{ now()->toDateString() }}">
-                                    <button class="rounded bg-emerald-600 px-3 py-1 text-xs font-semibold text-white hover:bg-emerald-500" type="submit">
-                                        Kembalikan
-                                    </button>
-                                </form>
-                            @else
-                                <span class="text-xs text-slate-500">-</span>
-                            @endif
-                        </td>
+                        @if (auth()->user()->role === 'petugas')
+                            <td class="px-4 py-3">
+                                @if (! $loan->return_date)
+                                    <form class="flex flex-wrap items-center gap-2" method="POST" action="{{ route('loans.update', $loan) }}">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input class="rounded border border-slate-300 px-2 py-1 text-xs" name="return_date" type="date" value="{{ now()->toDateString() }}">
+                                        <button class="rounded bg-emerald-600 px-3 py-1 text-xs font-semibold text-white hover:bg-emerald-500" type="submit">
+                                            Kembalikan
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="text-xs text-slate-500">-</span>
+                                @endif
+                            </td>
+                        @endif
                     </tr>
                 @empty
                     <tr>
-                        <td class="px-4 py-6 text-center text-slate-500" colspan="7">Belum ada data peminjaman.</td>
+                        <td class="px-4 py-6 text-center text-slate-500" colspan="{{ auth()->user()->role === 'petugas' ? 7 : 6 }}">Belum ada data peminjaman.</td>
                     </tr>
                 @endforelse
             </tbody>
@@ -84,7 +95,7 @@
         <ul class="mt-3 space-y-2 text-sm text-slate-700">
             @forelse ($overdueLoans as $loan)
                 <li>
-                    {{ $loan->member->name }} - {{ $loan->book->title }} (Jatuh tempo: {{ $loan->due_date }})
+                    {{ $loan->user->name }} - {{ $loan->book->title }} (Jatuh tempo: {{ $loan->due_date }})
                 </li>
             @empty
                 <li class="text-slate-500">Tidak ada peminjaman jatuh tempo.</li>

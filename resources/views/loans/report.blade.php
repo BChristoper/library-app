@@ -18,7 +18,7 @@
                 <tbody class="divide-y divide-slate-200">
                     @forelse ($activeLoans as $loan)
                         <tr>
-                            <td class="px-4 py-3">{{ $loan->member->name }}</td>
+                            <td class="px-4 py-3">{{ $loan->user->name }}</td>
                             <td class="px-4 py-3">{{ $loan->book->title }}</td>
                             <td class="px-4 py-3">{{ $loan->loan_date }}</td>
                             <td class="px-4 py-3">{{ $loan->due_date }}</td>
@@ -48,7 +48,7 @@
                 <tbody class="divide-y divide-rose-200">
                     @forelse ($overdueLoans as $loan)
                         <tr>
-                            <td class="px-4 py-3">{{ $loan->member->name }}</td>
+                            <td class="px-4 py-3">{{ $loan->user->name }}</td>
                             <td class="px-4 py-3">{{ $loan->book->title }}</td>
                             <td class="px-4 py-3">{{ $loan->loan_date }}</td>
                             <td class="px-4 py-3">{{ $loan->due_date }}</td>

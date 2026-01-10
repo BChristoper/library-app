@@ -4,26 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Loan;
-use App\Models\Member;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class LoanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $query = $request->string('q')->trim();
         $status = $request->string('status')->lower();
+        $user = $request->user();
+        $userId = $user && $user->role === 'anggota'
+            ? $user->id
+            : null;
 
-        $loansQuery = Loan::with(['member', 'book'])
+        // Filter peminjaman untuk anggota yang login, plus pencarian dan status.
+        $loansQuery = Loan::with(['user', 'book'])
+            ->when($userId, function ($builder) use ($userId) {
+                $builder->where('user_id', $userId);
+            })
             ->when($query->isNotEmpty(), function ($builder) use ($query) {
                 $builder->where(function ($searchQuery) use ($query) {
-                    $searchQuery->whereHas('member', function ($memberQuery) use ($query) {
-                        $memberQuery->where('name', 'like', '%' . $query . '%')
-                            ->orWhere('member_code', 'like', '%' . $query . '%');
+                    $searchQuery->whereHas('user', function ($userQuery) use ($query) {
+                        $userQuery->where('name', 'like', '%' . $query . '%')
+                            ->orWhere('member_code', 'like', '%' . $query . '%')
+                            ->orWhere('email', 'like', '%' . $query . '%');
                     })->orWhereHas('book', function ($bookQuery) use ($query) {
                         $bookQuery->where('title', 'like', '%' . $query . '%')
                             ->orWhere('author', 'like', '%' . $query . '%');
@@ -43,11 +49,21 @@ class LoanController extends Controller
 
         $loans = $loansQuery->orderByDesc('loan_date')->get();
 
-        $activeCount = Loan::whereNull('return_date')->count();
-        $overdueCount = Loan::whereNull('return_date')
+        $activeCount = Loan::when($userId, function ($builder) use ($userId) {
+                $builder->where('user_id', $userId);
+            })
+            ->whereNull('return_date')
+            ->count();
+        $overdueCount = Loan::when($userId, function ($builder) use ($userId) {
+                $builder->where('user_id', $userId);
+            })
+            ->whereNull('return_date')
             ->whereDate('due_date', '<', now()->toDateString())
             ->count();
-        $overdueLoans = Loan::with(['member', 'book'])
+        $overdueLoans = Loan::with(['user', 'book'])
+            ->when($userId, function ($builder) use ($userId) {
+                $builder->where('user_id', $userId);
+            })
             ->whereNull('return_date')
             ->whereDate('due_date', '<', now()->toDateString())
             ->orderBy('due_date')
@@ -57,27 +73,24 @@ class LoanController extends Controller
         return view('loans.index', compact('loans', 'query', 'status', 'activeCount', 'overdueCount', 'overdueLoans'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        $members = Member::orderBy('name')->get();
+        $users = User::where('role', 'anggota')->orderBy('name')->get();
         $books = Book::orderBy('title')->get();
 
-        return view('loans.loan', compact('members', 'books'));
+        return view('loans.loan', compact('users', 'books'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'member_id' => ['required', 'exists:members,id'],
+            'user_id' => ['required', 'exists:users,id'],
             'book_id' => ['required', 'exists:books,id'],
-            'loan_date' => ['nullable', 'date'],
         ]);
+
+        $borrower = User::where('id', $validated['user_id'])
+            ->where('role', 'anggota')
+            ->firstOrFail();
 
         $book = Book::findOrFail($validated['book_id']);
 
@@ -87,11 +100,12 @@ class LoanController extends Controller
                 ->withErrors(['book_id' => 'Stok buku habis.']);
         }
 
-        $loanDate = Carbon::parse($validated['loan_date'] ?? now());
+        // Tanggal pinjam hari ini, jatuh tempo +7 hari.
+        $loanDate = Carbon::now();
         $dueDate = $loanDate->copy()->addDays(7);
 
         Loan::create([
-            'member_id' => $validated['member_id'],
+            'user_id' => $borrower->id,
             'book_id' => $validated['book_id'],
             'loan_date' => $loanDate->toDateString(),
             'due_date' => $dueDate->toDateString(),
@@ -135,12 +149,12 @@ class LoanController extends Controller
 
     public function report()
     {
-        $activeLoans = Loan::with(['member', 'book'])
+        $activeLoans = Loan::with(['user', 'book'])
             ->whereNull('return_date')
             ->orderBy('due_date')
             ->get();
 
-        $overdueLoans = Loan::with(['member', 'book'])
+        $overdueLoans = Loan::with(['user', 'book'])
             ->whereNull('return_date')
             ->whereDate('due_date', '<', now()->toDateString())
             ->orderBy('due_date')

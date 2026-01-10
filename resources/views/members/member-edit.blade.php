@@ -33,6 +33,13 @@
         </div>
 
         <div>
+            <label class="block text-sm font-medium">Password (opsional)</label>
+            <input class="mt-1 w-full rounded border border-slate-300 px-3 py-2" name="password" type="password">
+            @error('password')<p class="text-sm text-rose-600">{{ $message }}</p>@enderror
+            <p class="mt-1 text-xs text-slate-500">Kosongkan jika tidak ingin mengganti.</p>
+        </div>
+
+        <div>
             <label class="block text-sm font-medium">Alamat</label>
             <textarea class="mt-1 w-full rounded border border-slate-300 px-3 py-2" name="address" rows="3">{{ old('address', $member->address) }}</textarea>
             @error('address')<p class="text-sm text-rose-600">{{ $message }}</p>@enderror

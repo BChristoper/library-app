@@ -13,7 +13,7 @@ class BookController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar data pada halaman.
      */
     public function index(Request $request)
     {
@@ -32,7 +32,7 @@ class BookController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Menampilkan form untuk membuat data baru.
      */
     public function create()
     {
@@ -40,7 +40,7 @@ class BookController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Menyimpan data baru ke database.
      */
     public function store(Request $request)
     {
@@ -60,7 +60,7 @@ class BookController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Menampilkan form untuk mengedit data tertentu.
      */
     public function edit(Book $book)
     {
@@ -68,7 +68,7 @@ class BookController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Memperbarui data tertentu di database.
      */
     public function update(Request $request, Book $book)
     {
@@ -88,18 +88,25 @@ class BookController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Menghapus data tertentu dari database.
      */
     public function destroy(Book $book)
     {
-        try {
-            $this->bookService->deleteBook($book);
-        } catch (\Throwable $exception) {
+        // Hapus buku hanya jika tidak ada peminjaman aktif.
+        $hasActiveLoan = $book->loans()
+            ->whereNull('return_date')
+            ->exists();
+
+        if ($hasActiveLoan) {
             return redirect()->route('books.index')
                 ->withErrors(['book' => 'Buku tidak bisa dihapus karena masih dipakai pada peminjaman.']);
         }
+
+        $book->loans()->delete();
+        $this->bookService->deleteBook($book);
 
         return redirect()->route('books.index')
             ->with('success', 'Buku berhasil dihapus.');
     }
 }
+

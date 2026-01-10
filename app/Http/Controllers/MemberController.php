@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Member;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
 class MemberController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar data pada halaman.
      */
     public function index(Request $request)
     {
         $query = $request->string('q')->trim();
 
-        $members = Member::query()
+        $members = User::query()
+            ->where('role', 'anggota')
             ->when($query->isNotEmpty(), function ($builder) use ($query) {
                 $builder->where('name', 'like', '%' . $query . '%')
                     ->orWhere('member_code', 'like', '%' . $query . '%')
@@ -27,7 +29,7 @@ class MemberController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Menampilkan form untuk membuat data baru.
      */
     public function create()
     {
@@ -35,44 +37,66 @@ class MemberController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Menyimpan data baru ke database.
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'member_code' => ['required', 'string', 'max:50', 'unique:members,member_code'],
+            'member_code' => ['required', 'string', 'max:50', 'unique:users,member_code'],
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255', 'unique:members,email'],
+            'email' => ['nullable', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:6'],
             'phone' => ['nullable', 'string', 'max:50'],
             'address' => ['nullable', 'string'],
         ]);
 
-        Member::create($validated);
+        // Password disimpan dalam bentuk hash.
+        User::create([
+            ...$validated,
+            'role' => 'anggota',
+            'password' => Hash::make($validated['password']),
+        ]);
 
         return redirect()->route('members.index')
             ->with('success', 'Anggota berhasil ditambahkan.');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Menampilkan form untuk mengedit data tertentu.
      */
-    public function edit(Member $member)
+    public function edit(User $member)
     {
+        if ($member->role !== 'anggota') {
+            abort(404);
+        }
+
         return view('members.member-edit', compact('member'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Memperbarui data tertentu di database.
      */
-    public function update(Request $request, Member $member)
+    public function update(Request $request, User $member)
     {
+        if ($member->role !== 'anggota') {
+            abort(404);
+        }
+
         $validated = $request->validate([
-            'member_code' => ['required', 'string', 'max:50', 'unique:members,member_code,' . $member->id],
+            'member_code' => ['required', 'string', 'max:50', 'unique:users,member_code,' . $member->id],
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255', 'unique:members,email,' . $member->id],
+            'email' => ['nullable', 'email', 'max:255', 'unique:users,email,' . $member->id],
+            'password' => ['nullable', 'string', 'min:6'],
             'phone' => ['nullable', 'string', 'max:50'],
             'address' => ['nullable', 'string'],
         ]);
+
+        // Jika password diisi, hash ulang; jika kosong, abaikan.
+        if (! empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
 
         $member->update($validated);
 
@@ -81,10 +105,14 @@ class MemberController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Menghapus data tertentu dari database.
      */
-    public function destroy(Member $member)
+    public function destroy(User $member)
     {
+        if ($member->role !== 'anggota') {
+            abort(404);
+        }
+
         try {
             $member->delete();
         } catch (\Throwable $exception) {
@@ -96,3 +124,4 @@ class MemberController extends Controller
             ->with('success', 'Anggota berhasil dihapus.');
     }
 }
+

@@ -11,11 +11,27 @@
             <div class="max-w-5xl mx-auto px-4 py-4 flex flex-wrap items-center gap-4">
                 <a class="text-lg font-semibold tracking-wide" href="{{ route('home') }}">Perpustakaan</a>
                 <nav class="flex flex-wrap gap-5 text-sm text-slate-600">
-                    <a class="hover:text-slate-900" href="{{ route('books.index') }}">Buku</a>
-                    <a class="hover:text-slate-900" href="{{ route('members.index') }}">Anggota</a>
-                    <a class="hover:text-slate-900" href="{{ route('loans.index') }}">Peminjaman</a>
-                    <a class="hover:text-slate-900" href="{{ route('loans.report') }}">Laporan</a>
+                    @auth
+                        <a class="hover:text-slate-900" href="{{ route('books.index') }}">Buku</a>
+                        <a class="hover:text-slate-900" href="{{ route('loans.index') }}">Peminjaman</a>
+                        @if (auth()->user()->role === 'petugas')
+                            <a class="hover:text-slate-900" href="{{ route('members.index') }}">Anggota</a>
+                            <a class="hover:text-slate-900" href="{{ route('loans.report') }}">Laporan</a>
+                        @endif
+                    @endauth
                 </nav>
+                <div class="ml-auto flex items-center gap-3 text-sm text-slate-600">
+                    @auth
+                        <span>{{ auth()->user()->name }} ({{ auth()->user()->role }})</span>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button class="rounded border border-slate-300 px-3 py-1 text-xs" type="submit">Logout</button>
+                        </form>
+                    @endauth
+                    @guest
+                        <a class="rounded border border-slate-300 px-3 py-1 text-xs" href="{{ route('login') }}">Login</a>
+                    @endguest
+                </div>
             </div>
         </header>
 

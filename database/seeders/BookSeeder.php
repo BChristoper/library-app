@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 class BookSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Menjalankan seeder untuk data contoh.
      */
     public function run(): void
     {
@@ -60,3 +60,4 @@ class BookSeeder extends Seeder
         }
     }
 }
+

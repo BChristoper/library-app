@@ -4,14 +4,14 @@ namespace Database\Seeders;
 
 use App\Models\Book;
 use App\Models\Loan;
-use App\Models\Member;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class LoanSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Menjalankan seeder untuk data contoh.
      */
     public function run(): void
     {
@@ -20,27 +20,27 @@ class LoanSeeder extends Seeder
         }
 
         $books = Book::orderBy('id')->take(5)->get();
-        $members = Member::orderBy('id')->take(5)->get();
+        $users = User::where('role', 'anggota')->orderBy('id')->take(5)->get();
 
-        if ($books->count() < 3 || $members->count() < 3) {
+        if ($books->count() < 3 || $users->count() < 3) {
             return;
         }
 
         $loans = [
             [
-                'member' => $members[0],
+                'user' => $users[0],
                 'book' => $books[0],
                 'loan_date' => Carbon::now()->subDays(10),
                 'return_date' => null,
             ],
             [
-                'member' => $members[1],
+                'user' => $users[1],
                 'book' => $books[1],
                 'loan_date' => Carbon::now()->subDays(2),
                 'return_date' => null,
             ],
             [
-                'member' => $members[2],
+                'user' => $users[2],
                 'book' => $books[2],
                 'loan_date' => Carbon::now()->subDays(12),
                 'return_date' => Carbon::now()->subDays(4),
@@ -52,7 +52,7 @@ class LoanSeeder extends Seeder
             $dueDate = $loanDate->copy()->addDays(7);
 
             $loan = Loan::create([
-                'member_id' => $loanData['member']->id,
+                'user_id' => $loanData['user']->id,
                 'book_id' => $loanData['book']->id,
                 'loan_date' => $loanDate->toDateString(),
                 'due_date' => $dueDate->toDateString(),
@@ -67,3 +67,4 @@ class LoanSeeder extends Seeder
         }
     }
 }
+

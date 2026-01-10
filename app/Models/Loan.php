@@ -10,16 +10,16 @@ class Loan extends Model
     use HasFactory;
 
     protected $fillable = [
-        'member_id',
+        'user_id',
         'book_id',
         'loan_date',
         'due_date',
         'return_date',
     ];
 
-    public function member()
+    public function user()
     {
-        return $this->belongsTo(Member::class);
+        return $this->belongsTo(User::class);
     }
 
     public function book()
