@@ -1,4 +1,4 @@
-# Dokumentasi Sistem Perpustakaan menggunakawn Laravel
+# Dokumentasi Sistem Perpustakaan menggunakan Laravel
 
 ## Ringkasan
 Aplikasi web ini membantu perpustakaan mengelola katalog buku dan pencatatan peminjaman. Pengguna dibagi menjadi petugas dan anggota. Petugas mengelola data, anggota hanya melihat dan memantau peminjaman miliknya. Aplikasi dibuat dengan Laravel (PHP) dan MySQL, dengan antarmuka Tailwind via CDN.
