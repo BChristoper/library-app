@@ -1,18 +1,32 @@
 # Dokumentasi Sistem Perpustakaan menggunakan Laravel
 
 ## Ringkasan
-Aplikasi web ini membantu perpustakaan mengelola katalog buku dan pencatatan peminjaman. Pengguna dibagi menjadi petugas dan anggota. Petugas mengelola data, anggota hanya melihat dan memantau peminjaman miliknya. Aplikasi dibuat dengan Laravel (PHP) dan MySQL, dengan antarmuka Tailwind via CDN.
+Aplikasi web ini membantu sebuah perpustakaan mengelola katalog buku dan pencatatan peminjaman. Pengguna dibagi menjadi petugas dan anggota. Petugas mengelola data, anggota hanya melihat dan memantau peminjaman miliknya. Aplikasi dibuat dengan Laravel (PHP) dan MySQL, dengan antarmuka Tailwind via  (Content Delivery Network) CDN.
 
 ## Metode Pengembangan
-- Metode: Waterfall
+- Metode: Waterfall.
 - Alasan: kebutuhan relatif jelas, scope kecil, waktu pengerjaan singkat.
 - Tahap: Analisis -> Desain -> Implementasi -> Pengujian -> Dokumentasi.
 
-## Diagram & Pemodelan
-- ERD: ada di `docs/ERD DIAGRAM.drawio.xml`
+## Diagram dan Pemodelan
+- ERD: ada di `docs/ERD DIAGRAM.drawio.xml`.
 - Use Case: petugas (CRUD buku, catat pinjam/kembali, laporan), anggota (lihat buku, lihat peminjaman).
-- Class Diagram sederhana: Controller → Service → Model (contoh BookController → BookService → Book).
-- Component Diagram: UI (Blade) ↔ Controller ↔ Model/Database.
+- Class Diagram sederhana: Controller -> Service -> Model (contoh BookController -> BookService -> Book).
+- Component Diagram: UI (Blade) -> Controller -> Model/Database.
+
+## Lingkungan Pengembangan
+- IDE: Visual Studio Code.
+- Runtime lokal: Laragon.
+- Bahasa/Framework: PHP + Laravel.
+- DBMS: MySQL.
+
+## Requirement / Dependensi
+- PHP 8.2+.
+- Composer.
+- MySQL.
+- Laragon (untuk server lokal).
+- Browser modern (Chrome/Edge/Firefox).
+- Node.js hanya diperlukan jika ingin menggunakan tooling frontend tambahan (opsional).
 
 ## Fitur Utama
 - Login petugas dan anggota + logout.
@@ -20,7 +34,7 @@ Aplikasi web ini membantu perpustakaan mengelola katalog buku dan pencatatan pem
 - Buku: daftar + pencarian (judul/penulis/ISBN), tambah, ubah, hapus.
 - Anggota: daftar + pencarian (nama/kode/email), tambah, ubah, hapus.
 - Peminjaman: daftar + filter status (aktif/kembali/terlambat) + pencarian.
-- Peminjaman (petugas): catat pinjam, catat kembali, tanggal jatuh tempo otomatis +7 hari.
+- Peminjaman (petugas): catat pinjam, catat kembali, jatuh tempo otomatis +7 hari.
 - Stok buku otomatis berkurang saat pinjam dan bertambah saat kembali.
 - Laporan peminjaman aktif dan terlambat (petugas).
 
@@ -65,18 +79,6 @@ Relasi:
    ```bash
    composer install
    ```
-## 1.1 Debugbar (Opsional)
-Jika ingin menampilkan bar debug di bawah halaman:
-1. Install package:
-   ```bash
-   composer require barryvdh/laravel-debugbar --dev
-   ```
-2. Pastikan `.env`:
-   ```text
-   APP_DEBUG=true
-   ```
-3. Reload halaman.
-
 2. Salin `.env` dan atur koneksi database:
    ```bash
    cp .env.example .env
@@ -103,9 +105,20 @@ Jika ingin menampilkan bar debug di bawah halaman:
    php artisan db:seed
    ```
 6. Buka aplikasi:
-   - Laragon: klik pada menu pada folder yang telah disimpan dan klik pada nama file
+   - Laragon: `http://library-app.test`
    - Atau: `php artisan serve`
 
+## Debugbar (Opsional)
+Jika ingin menampilkan bar debug di bawah halaman:
+1. Install package:
+   ```bash
+   composer require barryvdh/laravel-debugbar --dev
+   ```
+2. Pastikan `.env`:
+   ```text
+   APP_DEBUG=true
+   ```
+3. Reload halaman.
 
 ## Alur Singkat
 1. Petugas login.
@@ -162,7 +175,7 @@ Jika ingin menampilkan bar debug di bawah halaman:
 - login(): autentikasi user.
 - logout(): keluar dari aplikasi.
 
-## Middleware & Service
+## Middleware dan Service
 - Middleware: `auth` (wajib login) dan `role:petugas` (akses khusus petugas) di `app/Http/Middleware/RoleMiddleware.php`.
 - Service: `app/Services/BookService.php` untuk operasi create/update/delete buku.
 
@@ -173,11 +186,15 @@ Jika ingin menampilkan bar debug di bawah halaman:
 ## Error Handling
 - Validasi input memakai Laravel validation.
 - Error validasi ditampilkan di layout menggunakan session errors.
+- Pesan error ditulis dalam bahasa Indonesia.
+- Stok habis: peminjaman ditolak.
+- Tanggal pengembalian tidak valid: ditolak.
+- Buku dengan peminjaman aktif: tidak bisa dihapus.
 
 ## Ukuran Performa
 - Pengukuran lokal menggunakan Laravel Debugbar menunjukkan waktu respon sekitar 300 ms - 1 detik (tergantung data dan mesin).
 
-
+## Pemetaan Kompetensi Tambahan
 ### Program Baca-Tulis, Fungsi, Array, Akses File
 - Input form = proses baca data dari pengguna; output ditampilkan di Blade.
 - Fungsi/prosedur: method controller/service (contoh `store`, `update`).
@@ -189,88 +206,17 @@ Jika ingin menampilkan bar debug di bawah halaman:
 - Debugging: menggunakan error Laravel + (opsional) Debugbar.
 - Pengujian: dilakukan secara manual dengan skenario sederhana (tambah buku, pinjam, kembali).
 
-### Reuse Komponen & Lisensi
+### Reuse Komponen dan Lisensi
 - Reuse: Laravel, Tailwind CDN, dan Debugbar (opsional).
 - Lisensi: digunakan untuk keperluan pengembangan sesuai lisensi open-source masing-masing.
 
-### Dokumentasi Modul & Generate Doc
-- Dokumentasi modul tersedia di `docs/dokumentasi.md`.
-- ERD disediakan di `docs/ERD DIAGRAM.drawio.xml` dan `docs/erd-chen.drawio`.
+### Dokumentasi Modul dan Generate Doc
+- Dokumentasi modul disusun di README ini.
+- ERD disediakan di `docs/ERD DIAGRAM.drawio.xml`.
 
 ## Akun Login (Seeder)
-- Petugas: `petugas@example.com` / `password`
+- Petugas: `petugas@example.com` / `password`.
 - Anggota: dibuat dari menu Anggota oleh petugas.
 
 ## Berkas Tambahan
-- ERD ada di ERD DIAGRAM.drawio.xml
-
-## Dokumentasi Lengkap
-## 1. Ringkasan Proyek
-Aplikasi web perpustakaan untuk mengelola katalog buku dan pencatatan peminjaman. Pengguna terbagi menjadi petugas dan anggota. Petugas mengelola data, anggota hanya melihat katalog dan peminjaman miliknya.
-
-## 2. Metode Pengembangan
-- Metode: Waterfall (sederhana).
-- Alasan: kebutuhan jelas, scope kecil, waktu pengerjaan singkat.
-- Tahap: Analisis -> Desain -> Implementasi -> Pengujian -> Dokumentasi.
-
-## 3. Diagram & Pemodelan
-- ERD: `docs/ERD DIAGRAM.drawio.xml` (relasi users, books, loans).
-- Use Case: petugas (CRUD buku, catat pinjam/kembali, laporan), anggota (lihat buku, lihat peminjaman).
-- Class Diagram sederhana: Controller -> Service -> Model.
-- Component Diagram: UI (Blade) -> Controller -> Model/Database.
-
-## 4. Lingkungan Pengembangan
-- IDE: Visual Studio Code.
-- Runtime lokal: Laragon.
-- Bahasa/Framework: PHP + Laravel.
-- DBMS: MySQL.
-
-## 5. Coding Guidelines dan Best Practices
-- Struktur MVC Laravel: routes -> controller -> model -> view.
-- Validasi input memakai Laravel validation.
-- Logika buku dipisahkan ke service (`BookService`) agar controller rapi.
-- Penamaan file dan method konsisten.
-
-## 6. Error Handling
-- Error validasi ditampilkan di layout melalui session errors.
-- Kondisi khusus (stok habis, return_date invalid) ditangani dengan pesan error.
-
-## 7. Ukuran Performa
-- Pengukuran lokal memakai Laravel Debugbar: sekitar 300 ms - 1 detik.
-- Performa tergantung data dan spesifikasi komputer.
-
-## 8. Tipe Data dan Struktur Kontrol
-- Tipe data: string, integer, date, boolean (sesuai kolom tabel).
-- Struktur kontrol: percabangan (if), perulangan (foreach), dan query builder.
-
-## 9. Program Sederhana, Prosedur/Fungsi, Array, Akses File
-- Input/output: form HTML sebagai input, data ditampilkan di Blade.
-- Fungsi/prosedur: method controller/service (contoh `store`, `update`).
-- Array: data seeder (`BookSeeder`) untuk daftar buku.
-- Akses file: Laravel menyimpan log di `storage/logs`; proyek ini tidak memakai upload khusus.
-
-## 10. Pemrograman Berorientasi Objek
-- Class: Controller, Model, Service.
-- Property/method: contoh `BookService::createBook`.
-- Hak akses: `public`, `protected`, `private` pada class dan property.
-- Inheritance: Controller mewarisi base Controller Laravel.
-
-## 11. Reuse Komponen dan Library
-- Laravel, Tailwind CDN, Debugbar (opsional).
-- Digunakan sesuai lisensi open-source masing-masing.
-
-## 12. Akses Basis Data
-- CRUD via Eloquent (ORM).
-- Relasi: `loans.user_id` -> `users.id`, `loans.book_id` -> `books.id`.
-- Indeks: unique pada email dan isbn.
-- Koneksi diatur pada `.env`.
-
-## 13. Pengujian dan Debugging
-- Debugging: gunakan pesan error Laravel + Debugbar.
-- Uji manual: tambah buku, pinjam, kembali, lihat laporan.
-- Skenario uji sederhana dicatat pada README.
-
-## 14. Dokumentasi
-- README.md berisi ringkasan, fitur, cara menjalankan, dan pemetaan kompetensi.
-- Dokumen ERD disimpan di `docs/ERD DIAGRAM.drawio.xml`.
-
+- ERD ada di `docs/ERD DIAGRAM.drawio.xml`.
