@@ -135,6 +135,19 @@ Jika ingin menampilkan bar debug di bawah halaman:
 - Validasi data.
 - Simpan ke tabel books.
 
+### Tambah Anggota (Petugas)
+- Petugas membuka menu Anggota.
+- Klik Tambah Anggota, isi form.
+- Validasi data, simpan ke tabel users (role anggota).
+
+### Edit Anggota (Petugas)
+- Petugas pilih anggota pada daftar.
+- Ubah data, simpan perubahan.
+
+### Hapus Anggota (Petugas)
+- Petugas klik Hapus pada anggota.
+- Jika anggota masih terkait peminjaman, penghapusan ditolak.
+
 ### Peminjaman Buku (Petugas)
 - Petugas memilih anggota (user role `anggota`) dan buku.
 - Cek stok buku.
@@ -146,7 +159,7 @@ Jika ingin menampilkan bar debug di bawah halaman:
 - Isi return_date.
 - Update loan dan tambah stok buku.
 
-## Dokumentasi Fungsi Utama (Ringkas)
+## Dokumentasi Fungsi Utama
 ### BookController
 - index(q): menampilkan daftar buku dan pencarian.
 - create(): form tambah buku.
