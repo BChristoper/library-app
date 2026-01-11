@@ -189,7 +189,7 @@ Jika ingin menampilkan bar debug di bawah halaman:
 - logout(): keluar dari aplikasi.
 
 ## Middleware dan Service
-- Middleware: `auth` (wajib login) dan `role:petugas` (akses khusus petugas) di `app/Http/Middleware/RoleMiddleware.php`.
+- Middleware: `auth` (wajib login) dan `role:petugas` (akses khusus petugas) di `app/Http/Middleware/RoleMiddleware.php`. bisa dicek pada web.php
 - Service: `app/Services/BookService.php` untuk operasi create/update/delete buku.
 
 ## Seeder

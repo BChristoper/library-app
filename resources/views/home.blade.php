@@ -22,11 +22,13 @@
             <a class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 hover:bg-slate-100" href="{{ route('books.index') }}">
                 Lihat Buku
             </a>
-            @if (auth()->user()->role === 'petugas')
-                <a class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 hover:bg-slate-100" href="{{ route('members.index') }}">
-                    Lihat Anggota
-                </a>
-            @endif
+            @auth
+                @if (auth()->user()->role === 'petugas')
+                    <a class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 hover:bg-slate-100" href="{{ route('members.index') }}">
+                        Lihat Anggota
+                    </a>
+                @endif
+            @endauth
             <a class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 hover:bg-slate-100" href="{{ route('loans.index') }}">
                 Lihat Peminjaman
             </a>
