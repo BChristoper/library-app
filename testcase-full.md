@@ -152,7 +152,7 @@ Laporan pengujian manual untuk Sistem Manajemen Perpustakaan.
 - Kembali ke halaman login/home guest.
 
 **Bukti:**
-![Home (Guest)](docs/screenshots/Home.png)
+![Login](docs/screenshots/Login.png)
 
 **Status:** PASS
 
