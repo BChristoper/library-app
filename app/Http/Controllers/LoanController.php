@@ -36,7 +36,7 @@ class LoanController extends Controller
                     });
                 });
             })
-            ->when($status->isNotEmpty(), function ($builder) use ($status) {
+            ->when($status->isNotEmpty() && ! $userId, function ($builder) use ($status) {
                 if ($status->value() === 'active') {
                     $builder->whereNull('return_date');
                 } elseif ($status->value() === 'returned') {

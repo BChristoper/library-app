@@ -23,12 +23,14 @@
 
     <form class="mt-4 flex flex-wrap gap-2" method="GET" action="{{ route('loans.index') }}">
         <input class="w-full rounded border border-slate-300 px-3 py-2 sm:max-w-xs" name="q" type="text" placeholder="Cari anggota/buku" value="{{ $query }}">
-        <select class="rounded border border-slate-300 px-3 py-2 text-sm" name="status">
-            <option value="">Semua status</option>
-            <option value="active" @selected($status->value() === 'active')>Aktif</option>
-            <option value="returned" @selected($status->value() === 'returned')>Selesai</option>
-            <option value="overdue" @selected($status->value() === 'overdue')>Jatuh tempo</option>
-        </select>
+        @if (auth()->user()->role === 'petugas')
+            <select class="rounded border border-slate-300 px-3 py-2 text-sm" name="status">
+                <option value="">Semua status</option>
+                <option value="active" @selected($status->value() === 'active')>Aktif</option>
+                <option value="returned" @selected($status->value() === 'returned')>Selesai</option>
+                <option value="overdue" @selected($status->value() === 'overdue')>Jatuh tempo</option>
+            </select>
+        @endif
         <button class="rounded border border-slate-300 px-4 py-2 text-sm" type="submit">Filter</button>
         <a class="rounded border border-slate-300 px-4 py-2 text-sm" href="{{ route('loans.index') }}">Reset</a>
     </form>
@@ -62,7 +64,10 @@
                         <td class="px-4 py-3">{{ $loan->due_date }}</td>
                         <td class="px-4 py-3">{{ $loan->return_date ?? '-' }}</td>
                         <td class="px-4 py-3">
-                            {{ $loan->return_date ? 'Selesai' : 'Aktif' }}
+                            @php
+                                $isOverdue = ! $loan->return_date && $loan->due_date < now()->toDateString();
+                            @endphp
+                            {{ $loan->return_date ? 'Selesai' : ($isOverdue ? 'Terlambat' : 'Aktif') }}
                         </td>
                         @if (auth()->user()->role === 'petugas')
                             <td class="px-4 py-3">

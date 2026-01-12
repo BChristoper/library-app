@@ -19,6 +19,8 @@ class BookController extends Controller
     {
         $query = $request->string('q')->trim();
 
+        $jatuhtempo = now()->addDays(7)->toDateString();
+
         $books = Book::query()
             ->when($query->isNotEmpty(), function ($builder) use ($query) {
                 $builder->where('title', 'like', '%' . $query . '%')
@@ -27,7 +29,9 @@ class BookController extends Controller
             })
             ->orderBy('title')
             ->get();
-
+        
+        
+    
         return view('books.index', compact('books', 'query'));
     }
 
