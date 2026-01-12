@@ -168,7 +168,7 @@ Jika ingin menampilkan bar debug di bawah halaman:
 3. Reload halaman.
 
 ## Dokumen Pengujian
-- Test case lengkap: `testcase-full.md`.
+- Test case lengkap: [testcase-full.md](testcase-full.md).
 
 ## Alur Singkat
 1. Petugas login.
