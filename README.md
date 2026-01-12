@@ -38,6 +38,15 @@ Aplikasi web ini membantu sebuah perpustakaan mengelola katalog buku dan pencata
 - Stok buku otomatis berkurang saat pinjam dan bertambah saat kembali.
 - Laporan peminjaman aktif dan terlambat (petugas).
 
+## Screenshot
+- Home (guest): `docs/screenshots/Home.png`
+- Login: `docs/screenshots/Login.png`
+- Home (admin): `docs/screenshots/Home-Admin.png`
+
+![Home (guest)](docs/screenshots/Home.png)
+![Login](docs/screenshots/Login.png)
+![Home (admin)](docs/screenshots/Home-Admin.png)
+
 ## Modul dan Fitur (Detail)
 - Modul Buku
   - Menampilkan katalog buku + pencarian.
