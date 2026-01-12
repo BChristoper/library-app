@@ -167,6 +167,9 @@ Jika ingin menampilkan bar debug di bawah halaman:
    ```
 3. Reload halaman.
 
+## Dokumen Pengujian
+- Test case lengkap: `testcase-full.md`.
+
 ## Alur Singkat
 1. Petugas login.
 2. Petugas menambah data buku.
