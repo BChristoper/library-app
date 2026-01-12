@@ -39,13 +39,13 @@ Aplikasi web ini membantu sebuah perpustakaan mengelola katalog buku dan pencata
 - Laporan peminjaman aktif dan terlambat (petugas).
 
 ## Screenshot
-- Home (guest): `docs/screenshots/Home.png`
-- Login: `docs/screenshots/Login.png`
-- Home (admin): `docs/screenshots/Home-Admin.png`
+- Home (guest)
+  ![Home (guest)](docs/screenshots/Home.png)
+- Login
+  ![Login](docs/screenshots/Login.png)
+- Home (admin)
+  ![Home (admin)](docs/screenshots/Home-Admin.png)
 
-![Home (guest)](docs/screenshots/Home.png)
-![Login](docs/screenshots/Login.png)
-![Home (admin)](docs/screenshots/Home-Admin.png)
 
 ## Modul dan Fitur (Detail)
 - Modul Buku
