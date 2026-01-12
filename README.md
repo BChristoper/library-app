@@ -60,7 +60,7 @@ Relasi:
 - loans.book_id -> books.id (1 buku banyak peminjaman).
 
 ERD: ada di `docs/ERD DIAGRAM.drawio.xml`.
-![ERD Diagram](docs/ERD.drawio.png)
+![ERD Diagram](docs/screenshots/ERD.drawio.png)
 
 ## Project Structure
 ```
@@ -102,7 +102,7 @@ public/                                          # Aset publik (CSS/JS/IMG)
 docs/
   screenshots/                                   # Screenshot aplikasi
   ERD DIAGRAM.drawio.xml                          # File ERD (Draw.io)
-  ERD.drawio.png                                 # Gambar ERD
+  screenshots/ERD.drawio.png                     # Gambar ERD
 README.md                                        # Dokumentasi utama
 testcase-full.md                                 # Test case lengkap
 testcase.md                                      # Test case business logic
